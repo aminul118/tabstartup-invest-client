@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+html {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}

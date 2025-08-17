@@ -1,3 +1,4 @@
+import AosProvider from "@/providers/AosProvider";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { IChildren } from "@/types";
@@ -15,7 +16,7 @@ const RootLayout = ({ children }: IChildren) => {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <AosProvider> {children}</AosProvider>
           </ThemeProvider>
           <Toaster richColors position="top-right" />
         </body>
