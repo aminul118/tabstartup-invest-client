@@ -17,7 +17,7 @@ import { navigationLinks } from "./navigationMenuLink";
 
 // Navigation links array to be used in both desktop and mobile menus
 
-export default function Navbar() {
+const Navbar = () => {
   return (
     <header className="border-b px-4 md:px-6 fixed w-full bg-white dark:bg-black z-50">
       <div className="flex h-16 items-center justify-between gap-4 container mx-auto">
@@ -74,9 +74,8 @@ export default function Navbar() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-primary hover:text-primary/90">
-              <Logo />
-            </Link>
+            <Logo />
+
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
@@ -101,4 +100,6 @@ export default function Navbar() {
       </div>
     </header>
   );
-}
+};
+
+export default Navbar;

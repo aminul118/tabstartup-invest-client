@@ -1,8 +1,8 @@
 import Footer from "@/components/layouts/Footer/Footer";
 import Navbar from "@/components/layouts/Navbar/Navbar";
-import { IChildren } from "@/types";
+import { Children } from "@/types";
 
-const PublicLayout = ({ children }: IChildren) => {
+const PublicLayout = ({ children }: Children) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

@@ -1,9 +1,14 @@
-import React from 'react';
+import React from "react";
 
-export interface IChildren {
+export interface Children {
   children: React.ReactNode;
 }
 
-export interface IParams {
+export interface Params {
   params: Promise<{ slug: string }>;
+}
+
+export interface GlobalErrorProps {
+  error: Error & { digest?: string };
+  reset: () => void;
 }

@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Logo = () => {
   return (
-    <div>
+    <Link href="/">
       <Image src="/logo.png" width={160} height={40} alt="Logo" />
-    </div>
+    </Link>
   );
 };
 

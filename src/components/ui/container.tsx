@@ -1,7 +1,7 @@
-import { IChildren } from "@/types";
+import { Children } from "@/types";
 import { cn } from "@/lib/utils";
 
-interface ContainerProps extends IChildren {
+interface ContainerProps extends Children {
   className?: string;
   bg?: string;
 }

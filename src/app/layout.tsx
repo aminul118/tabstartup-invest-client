@@ -1,10 +1,10 @@
 import AosProvider from "@/providers/AosProvider";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import { IChildren } from "@/types";
+import { Children } from "@/types";
 import { Toaster } from "sonner";
 
-const RootLayout = ({ children }: IChildren) => {
+const RootLayout = ({ children }: Children) => {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -18,7 +18,7 @@ const RootLayout = ({ children }: IChildren) => {
           >
             <AosProvider> {children}</AosProvider>
           </ThemeProvider>
-          <Toaster richColors position="top-right" />
+          <Toaster richColors position="top-right" theme="system" />
         </body>
       </html>
     </>

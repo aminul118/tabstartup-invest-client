@@ -1,3 +1,4 @@
+import CallToAction from "@/components/modules/Home/CallToAction";
 import FAQ from "@/components/modules/Home/Faq";
 import HeroBanner from "@/components/modules/Home/HeroBanner";
 import HomeStats from "@/components/modules/Home/HomeStats";
@@ -9,6 +10,7 @@ const HomePage = () => {
       <HeroBanner />
       <HomeStats />
       <Investment />
+      <CallToAction/>
       <FAQ />
     </>
   );
