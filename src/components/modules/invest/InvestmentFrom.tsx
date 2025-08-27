@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,59 +17,76 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import axios from "axios";
-import { toast } from "sonner";
+import { ApiResponse } from "@/types";
 
-// ✅ Zod schema
+// ---------- Validation (keep amount as string in the form, convert on submit) ----------
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  profession: z.string().min(2, {
-    message: "Profession must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Enter a valid email address.",
-  }),
-  whatApp: z.string().min(2, {
-    message: "WhatsApp number must be valid.",
-  }),
-  invest: z.string().min(1, {
-    message: "Please enter your investment amount.",
-  }),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  profession: z
+    .string()
+    .min(2, { message: "Profession must be at least 2 characters." }),
+  email: z.string().email({ message: "Enter a valid email address." }),
+  whatsapp: z.string().min(2, { message: "WhatsApp number must be valid." }),
+  amount: z
+    .string()
+    .min(1, { message: "Please enter your investment amount." }),
 });
 
-const InvestmentFrom = () => {
-  // ✅ Setup form
+// ---------- API response type (optional but nice) ----------
+
+// ---------- Component ----------
+const InvestmentForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       profession: "",
       email: "",
-      whatApp: "",
-      invest: "",
+      whatsapp: "",
+      amount: "",
     },
   });
 
-  // Form Submit Handle function
-  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
-    console.log("Form submitted:", payload);
+  // Submit handler
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // Build payload EXACTLY like Postman (amount as number)
+    const payload = {
+      name: values.name,
+      email: values.email,
+      profession: values.profession,
+      whatsapp: values.whatsapp,
+      amount: Number(values.amount),
+    };
+
+    // For your verification in dev:
+    console.log("Sending payload:", payload);
+
     const toastId = toast.loading("Investment message sending...");
     try {
-      const res = await axios.post(
-        "https://server.tabstartup.com/invest/create-invest",
+      const { data } = await axios.post<ApiResponse<unknown>>(
+        "https://server.tabstartup.com/api/v1/invest/create-invest",
         payload
       );
-      console.log(res);
-      toast.success("Investment message send successfully", {
+
+      toast.success(data?.message || "Investment message sent successfully", {
         id: toastId,
       });
-    } catch (error: any) {
-      toast.error("Investment message failed to send", { id: toastId });
-    } finally {
-      form.reset();
+
+      // (optional) reset the form after success
+      form.reset({
+        name: "",
+        profession: "",
+        email: "",
+        whatsapp: "",
+        amount: "",
+      });
+    } catch (err) {
+      const ax = err as AxiosError<any>;
+      const serverMsg =
+        ax.response?.data?.message ||
+        ax.message ||
+        "Investment message failed to send";
+      toast.error(serverMsg, { id: toastId });
     }
   };
 
@@ -131,27 +151,34 @@ const InvestmentFrom = () => {
           {/* WhatsApp */}
           <FormField
             control={form.control}
-            name="whatApp"
+            name="whatsapp"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>WhatsApp Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="+8801XXXXXXXXX" {...field} />
+                  <Input placeholder="017XXXXXXXX" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Investment */}
+          {/* Investment Amount */}
           <FormField
             control={form.control}
-            name="invest"
+            name="amount"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Investment Amount</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Enter amount" {...field} />
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    placeholder="Enter amount (e.g., 5000)"
+                    {...field}
+                    // Keep value as string in the input; convert on submit
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -168,4 +195,4 @@ const InvestmentFrom = () => {
   );
 };
 
-export default InvestmentFrom;
+export default InvestmentForm;
