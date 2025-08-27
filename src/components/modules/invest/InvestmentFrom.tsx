@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "sonner";
 
 // ✅ Zod schema
 const formSchema = z.object({
@@ -46,10 +50,25 @@ const InvestmentFrom = () => {
     },
   });
 
-  // ✅ Submit handler
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Form submitted:", values);
-  }
+  // Form Submit Handle function
+  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
+    console.log("Form submitted:", payload);
+    const toastId = toast.loading("Investment message sending...");
+    try {
+      const res = await axios.post(
+        "https://server.tabstartup.com/invest/create-invest",
+        payload
+      );
+      console.log(res);
+      toast.success("Investment message send successfully", {
+        id: toastId,
+      });
+    } catch (error: any) {
+      toast.error("Investment message failed to send", { id: toastId });
+    } finally {
+      form.reset();
+    }
+  };
 
   return (
     <div className="rounded-xl shadow-md p-6 border sticky top-0 lg:min-w-md">
